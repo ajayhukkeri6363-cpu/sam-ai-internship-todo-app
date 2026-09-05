@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Smart Task & To-Do Management Web Application with LocalStorage persistence." />
+  <title>Smart Task Manager | SAM AI Technologies Task 2</title>
+
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- App Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand">
+          <div class="brand-icon">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <h1 class="app-title">TaskFlow</h1>
+            <p class="app-subtitle">Smart To-Do &amp; Task Manager • SAM AI Technologies Task 2</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="theme-toggle" class="icon-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+            <i class="fa-solid fa-moon dark-icon"></i>
+            <i class="fa-solid fa-sun light-icon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <div class="container">
+        <!-- Progress / Statistics Card -->
+        <section class="stats-card" aria-label="Task Statistics">
+          <div class="stats-header">
+            <div class="stats-info">
+              <span class="stats-label">Task Completion Progress</span>
+              <h2 class="stats-counter" id="stats-counter">0 of 0 completed</h2>
+            </div>
+            <div class="stats-percentage" id="stats-percentage">0%</div>
+          </div>
+          <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress-bar-container">
+            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+          </div>
+        </section>
+
+        <!-- Task Input Section -->
+        <section class="input-card" aria-label="Add New Task">
+          <form id="task-form" class="task-form" novalidate>
+            <div class="input-row">
+              <div class="input-group flex-grow">
+                <i class="fa-regular fa-circle-check input-icon"></i>
+                <input 
+                  type="text" 
+                  id="task-input" 
+                  class="task-input" 
+                  placeholder="What needs to be done? (e.g., Review project documentation)" 
+                  autocomplete="off" 
+                  required 
+                />
+              </div>
+
+              <!-- Priority Selector -->
+              <div class="select-group">
+                <select id="priority-select" class="priority-select" aria-label="Select Task Priority">
+                  <option value="medium" selected>⚡ Medium</option>
+                  <option value="high">🔥 High</option>
+                  <option value="low">🌱 Low</option>
+                </select>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary btn-add" id="add-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>Add Task</span>
+              </button>
+            </div>
+            <span class="input-error" id="input-error"></span>
+          </form>
+        </section>
+
+        <!-- Filters & Search Toolbar -->
+        <section class="toolbar-card" aria-label="Filter and Search Tasks">
+          <!-- Filter Tabs -->
+          <div class="filter-tabs" role="tablist">
+            <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
+              All <span class="badge" id="count-all">0</span>
+            </button>
+            <button class="filter-tab" data-filter="active" role="tab" aria-selected="false">
+              Active <span class="badge" id="count-active">0</span>
+            </button>
+            <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false">
+              Completed <span class="badge" id="count-completed">0</span>
+            </button>
+          </div>
+
+          <!-- Search & Controls -->
+          <div class="toolbar-controls">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass search-icon"></i>
+              <input 
+                type="text" 
+                id="search-input" 
+                class="search-input" 
+                placeholder="Search tasks..." 
+                aria-label="Search Tasks" 
+              />
+              <button id="clear-search-btn" class="clear-search-btn" aria-label="Clear Search" style="display: none;">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+
+            <button id="clear-completed-btn" class="btn btn-outline-danger btn-sm" title="Remove all completed tasks">
+              <i class="fa-regular fa-trash-can"></i> Clear Completed
+            </button>
+          </div>
+        </section>
+
+        <!-- Tasks List Container -->
+        <section class="tasks-section" aria-label="Task List">
+          <ul class="task-list" id="task-list">
+            <!-- Dynamic Task Items rendered here -->
+          </ul>
+
+          <!-- Empty State (Shown when no tasks match) -->
+          <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-icon">
+              <i class="fa-regular fa-clipboard"></i>
+            </div>
+            <h3 class="empty-title">No tasks found</h3>
+            <p class="empty-desc">You're all caught up! Add a new task above or try adjusting your search/filter.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- App Footer -->
+    <footer class="app-footer">
+      <div class="container footer-content">
+        <p class="footer-text">
+          TaskFlow • Developed by <strong>Ajay Hukkeri</strong> for <strong>SAM AI Technologies</strong> Web Development Internship.
+        </p>
+        <div class="footer-links">
+          <a href="../portfolio/index.html" class="footer-link"><i class="fa-solid fa-arrow-left"></i> Back to Portfolio</a>
+          <span class="dot-separator">•</span>
+          <span class="storage-status"><i class="fa-solid fa-cloud-arrow-down"></i> LocalStorage Connected</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- JavaScript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
