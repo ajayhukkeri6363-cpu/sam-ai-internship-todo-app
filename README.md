@@ -1,7 +1,7 @@
 # TaskFlow — Smart Task & To-Do Management Web App (SAM AI Technologies Task 2)
 
-[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://ajayhukkeri6363-cpu.github.io/sam-ai-todo-app)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/ajayhukkeri6363-cpu/sam-ai-todo-app)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=vercel)](https://ajayhukkeri6363-cpu.github.io/sam-ai-internship-todo-app)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github)](https://github.com/ajayhukkeri6363-cpu/sam-ai-internship-todo-app)
 [![Internship](https://img.shields.io/badge/Internship-SAM%20AI%20Technologies-indigo?style=for-the-badge)](https://sites.google.com/view/sam-ai-technologies/home)
 
 > A modern, responsive task management application built by **Ajay Hukkeri** with **Vanilla JavaScript (ES6+)**, **HTML5**, and **CSS3** featuring full browser **LocalStorage** persistence.
@@ -58,8 +58,8 @@ todo-app/
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/ajayhukkeri6363-cpu/sam-ai-todo-app.git
-   cd sam-ai-todo-app/todo-app
+   git clone https://github.com/ajayhukkeri6363-cpu/sam-ai-internship-todo-app.git
+   cd sam-ai-internship-todo-app/todo-app
    ```
 
 2. **Open the project**:
