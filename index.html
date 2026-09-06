@@ -3,35 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Smart Task & To-Do Management Web Application with LocalStorage persistence." />
-  <title>Smart Task Manager | SAM AI Technologies Task 2</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="description" content="TaskFlow — SaaS-Grade Smart Task Manager with Multi-View Kanban, Calendar, Subtasks, Pomodoro Timer, Natural Language Quick Add, and Productivity Analytics." />
+  <title>TaskFlow | Smart Task Manager</title>
 
-  <!-- Google Fonts & FontAwesome -->
+  <!-- Preconnect Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css" />
+  <!-- Main Stylesheet (Versioned for cache-busting) -->
+  <link rel="stylesheet" href="css/style.css?v=2.0.0" />
 </head>
 <body>
-  <div class="app-wrapper">
-    <!-- App Header -->
+  <!-- Ambient Deep Background Lighting -->
+  <div class="ambient-glow-wrapper" aria-hidden="true">
+    <div class="ambient-glow-orb orb-primary"></div>
+    <div class="ambient-glow-orb orb-secondary"></div>
+  </div>
+
+  <div class="app-layout">
+    
+    <!-- ======================================================================
+         1. TOP APP HEADER & NAVIGATION
+         ====================================================================== -->
     <header class="app-header">
-      <div class="header-content">
-        <div class="brand">
-          <div class="brand-icon">
+      <div class="header-container">
+        <!-- Brand Logo -->
+        <div class="brand-section">
+          <div class="brand-logo-icon">
             <i class="fa-solid fa-list-check"></i>
           </div>
-          <div>
-            <h1 class="app-title">TaskFlow</h1>
-            <p class="app-subtitle">Smart To-Do &amp; Task Manager • SAM AI Technologies Task 2</p>
+          <div class="brand-text">
+            <div class="brand-title-row">
+              <span class="brand-title">TaskFlow</span>
+              <span class="brand-badge">Pro</span>
+            </div>
+            <p class="brand-subtitle">Smart Task Manager • SAM AI Technologies</p>
           </div>
         </div>
 
+        <!-- Central View Switcher Tabs -->
+        <nav class="view-nav" aria-label="Task Views Navigation">
+          <button class="view-nav-btn active" data-view="view-list" title="List View (1)">
+            <i class="fa-solid fa-list-ul"></i>
+            <span>List</span>
+          </button>
+          <button class="view-nav-btn" data-view="view-kanban" title="Kanban Board (2)">
+            <i class="fa-solid fa-table-columns"></i>
+            <span>Board</span>
+          </button>
+          <button class="view-nav-btn" data-view="view-calendar" title="Calendar View (3)">
+            <i class="fa-regular fa-calendar-days"></i>
+            <span>Calendar</span>
+          </button>
+          <button class="view-nav-btn" data-view="view-pomodoro" title="Focus Pomodoro Mode (4)">
+            <i class="fa-solid fa-stopwatch"></i>
+            <span>Focus</span>
+            <span class="badge-dot" id="pomodoro-active-dot" style="display: none;"></span>
+          </button>
+          <button class="view-nav-btn" data-view="view-analytics" title="Productivity Analytics (5)">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Analytics</span>
+          </button>
+        </nav>
+
+        <!-- Right Header Action Controls -->
         <div class="header-actions">
-          <button id="theme-toggle" class="icon-btn" aria-label="Toggle Dark/Light Mode" title="Toggle Theme">
+          <!-- Quick Add Button -->
+          <button id="btn-open-create-modal" class="btn btn-primary btn-sm" title="New Task (Press N)">
+            <i class="fa-solid fa-plus"></i>
+            <span class="d-none-mobile">New Task</span>
+          </button>
+
+          <!-- Shortcuts Help Button -->
+          <button id="btn-shortcuts-modal" class="icon-btn" title="Keyboard Shortcuts (?)" aria-label="Keyboard Shortcuts">
+            <i class="fa-solid fa-keyboard"></i>
+          </button>
+
+          <!-- Import / Export Button -->
+          <button id="btn-backup-modal" class="icon-btn" title="Backup / Restore Tasks" aria-label="Import and Export Data">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+          </button>
+
+          <!-- Notification Reminder Toggle -->
+          <button id="btn-notification-toggle" class="icon-btn" title="Enable Due Date Reminders" aria-label="Notification Reminders">
+            <i class="fa-regular fa-bell" id="notification-icon"></i>
+          </button>
+
+          <!-- Theme Toggle -->
+          <button id="theme-toggle" class="icon-btn" title="Toggle Theme (Dark / Light)" aria-label="Toggle Theme">
             <i class="fa-solid fa-moon dark-icon"></i>
             <i class="fa-solid fa-sun light-icon"></i>
           </button>
@@ -39,132 +105,814 @@
       </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- ======================================================================
+         2. MAIN DASHBOARD CONTENT AREA
+         ====================================================================== -->
     <main class="app-main">
-      <div class="container">
-        <!-- Progress / Statistics Card -->
-        <section class="stats-card" aria-label="Task Statistics">
-          <div class="stats-header">
-            <div class="stats-info">
-              <span class="stats-label">Task Completion Progress</span>
-              <h2 class="stats-counter" id="stats-counter">0 of 0 completed</h2>
+      <div class="container main-container">
+        
+        <!-- Dashboard Live Summary Metrics Banner -->
+        <section class="dashboard-stats-grid" aria-label="Task Overview Statistics">
+          <!-- Metric 1: Tasks Due Today -->
+          <div class="stat-card" id="card-stat-today">
+            <div class="stat-card-icon icon-blue">
+              <i class="fa-regular fa-calendar-check"></i>
             </div>
-            <div class="stats-percentage" id="stats-percentage">0%</div>
+            <div class="stat-card-content">
+              <span class="stat-card-label">Due Today</span>
+              <div class="stat-card-val-row">
+                <span class="stat-card-value" id="metric-today-count">0</span>
+                <span class="stat-card-sub" id="metric-today-sub">0 completed</span>
+              </div>
+            </div>
           </div>
-          <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress-bar-container">
-            <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+
+          <!-- Metric 2: In Progress -->
+          <div class="stat-card" id="card-stat-progress">
+            <div class="stat-card-icon icon-amber">
+              <i class="fa-solid fa-spinner"></i>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-card-label">In Progress</span>
+              <div class="stat-card-val-row">
+                <span class="stat-card-value" id="metric-progress-count">0</span>
+                <span class="stat-card-sub" id="metric-active-sub">0 to do</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 3: Overdue -->
+          <div class="stat-card" id="card-stat-overdue">
+            <div class="stat-card-icon icon-rose">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-card-label">Overdue</span>
+              <div class="stat-card-val-row">
+                <span class="stat-card-value" id="metric-overdue-count">0</span>
+                <span class="stat-card-sub text-rose" id="metric-overdue-sub">Needs attention</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric 4: Daily Streak -->
+          <div class="stat-card" id="card-stat-streak">
+            <div class="stat-card-icon icon-orange">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div class="stat-card-content">
+              <span class="stat-card-label">Daily Streak</span>
+              <div class="stat-card-val-row">
+                <span class="stat-card-value" id="metric-streak-count">0 Days</span>
+                <span class="stat-card-sub" id="metric-streak-sub">Keep it up! 🔥</span>
+              </div>
+            </div>
           </div>
         </section>
 
-        <!-- Task Input Section -->
-        <section class="input-card" aria-label="Add New Task">
-          <form id="task-form" class="task-form" novalidate>
-            <div class="input-row">
-              <div class="input-group flex-grow">
-                <i class="fa-regular fa-circle-check input-icon"></i>
+        <!-- Smart Quick Add Input Bar -->
+        <section class="quick-add-section" aria-label="Quick Add Task">
+          <div class="quick-add-card">
+            <form id="quick-add-form" novalidate>
+              <div class="quick-add-row">
+                <div class="quick-add-icon">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
                 <input 
                   type="text" 
-                  id="task-input" 
-                  class="task-input" 
-                  placeholder="What needs to be done? (e.g., Review project documentation)" 
-                  autocomplete="off" 
-                  required 
+                  id="quick-add-input" 
+                  class="quick-add-input" 
+                  placeholder="Smart Add: e.g., 'Study Java tomorrow at 6 PM #college in Study critical priority' (Press N)" 
+                  autocomplete="off"
+                  required
                 />
+                
+                <!-- Parsed Info Live Preview Tags -->
+                <div class="parsed-preview-container" id="parsed-preview-container" style="display: none;"></div>
+
+                <div class="quick-add-controls">
+                  <!-- Category Quick Selector -->
+                  <select id="quick-add-category" class="select-chip" title="Category">
+                    <option value="Personal">Personal</option>
+                    <option value="Work">Work</option>
+                    <option value="Study">Study</option>
+                    <option value="Coding" selected>Coding</option>
+                    <option value="Projects">Projects</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Other">Other</option>
+                  </select>
+
+                  <!-- Priority Quick Selector -->
+                  <select id="quick-add-priority" class="select-chip select-priority" title="Priority">
+                    <option value="critical">🔴 Critical</option>
+                    <option value="high">🟠 High</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                  </select>
+
+                  <!-- Submit Quick Task -->
+                  <button type="submit" class="btn btn-primary btn-add" id="btn-quick-add-submit">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add</span>
+                  </button>
+                </div>
+              </div>
+              <span class="input-error" id="quick-add-error"></span>
+            </form>
+          </div>
+        </section>
+
+        <!-- Multi-Dimensional Toolbar (Filters, Search, Sort & Bulk Actions) -->
+        <section class="toolbar-section" aria-label="Task Filters &amp; Search Controls">
+          <div class="toolbar-card">
+            <!-- Left: Status Filter Tabs -->
+            <div class="toolbar-tabs" role="tablist">
+              <button class="status-tab active" data-filter="all" role="tab" aria-selected="true">
+                All <span class="tab-badge" id="count-all">0</span>
+              </button>
+              <button class="status-tab" data-filter="today" role="tab" aria-selected="false">
+                Today <span class="tab-badge" id="count-today">0</span>
+              </button>
+              <button class="status-tab" data-filter="upcoming" role="tab" aria-selected="false">
+                Upcoming <span class="tab-badge" id="count-upcoming">0</span>
+              </button>
+              <button class="status-tab" data-filter="in_progress" role="tab" aria-selected="false">
+                In Progress <span class="tab-badge" id="count-in-progress">0</span>
+              </button>
+              <button class="status-tab" data-filter="completed" role="tab" aria-selected="false">
+                Completed <span class="tab-badge" id="count-completed">0</span>
+              </button>
+              <button class="status-tab" data-filter="overdue" role="tab" aria-selected="false">
+                Overdue <span class="tab-badge" id="count-overdue">0</span>
+              </button>
+            </div>
+
+            <!-- Right: Search, Multi-Filters & Sorters -->
+            <div class="toolbar-right-controls">
+              <!-- Search Box -->
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                  type="text" 
+                  id="search-input" 
+                  class="search-input" 
+                  placeholder="Search tasks, notes, tags... (Press /)" 
+                  aria-label="Search Tasks" 
+                />
+                <button id="clear-search-btn" class="clear-search-btn" aria-label="Clear Search" style="display: none;">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
               </div>
 
-              <!-- Priority Selector -->
-              <div class="select-group">
-                <select id="priority-select" class="priority-select" aria-label="Select Task Priority">
-                  <option value="medium" selected>⚡ Medium</option>
-                  <option value="high">🔥 High</option>
-                  <option value="low">🌱 Low</option>
+              <!-- Category Filter Dropdown -->
+              <div class="filter-dropdown-wrapper">
+                <select id="filter-category" class="filter-select" aria-label="Filter by Category">
+                  <option value="all">All Categories</option>
+                  <option value="Coding">Coding</option>
+                  <option value="Study">Study</option>
+                  <option value="Work">Work</option>
+                  <option value="Projects">Projects</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Shopping">Shopping</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
 
-              <!-- Submit Button -->
-              <button type="submit" class="btn btn-primary btn-add" id="add-btn">
-                <i class="fa-solid fa-plus"></i>
-                <span>Add Task</span>
+              <!-- Priority Filter Dropdown -->
+              <div class="filter-dropdown-wrapper">
+                <select id="filter-priority" class="filter-select" aria-label="Filter by Priority">
+                  <option value="all">All Priorities</option>
+                  <option value="critical">🔴 Critical</option>
+                  <option value="high">🟠 High</option>
+                  <option value="medium">🟡 Medium</option>
+                  <option value="low">🟢 Low</option>
+                </select>
+              </div>
+
+              <!-- Sort Dropdown -->
+              <div class="filter-dropdown-wrapper">
+                <select id="sort-select" class="filter-select" aria-label="Sort Tasks">
+                  <option value="due_asc">Due Date (Earliest)</option>
+                  <option value="due_desc">Due Date (Latest)</option>
+                  <option value="priority_desc">Priority (High → Low)</option>
+                  <option value="priority_asc">Priority (Low → High)</option>
+                  <option value="created_desc" selected>Date Added (Newest)</option>
+                  <option value="created_asc">Date Added (Oldest)</option>
+                  <option value="title_asc">Alphabetical (A → Z)</option>
+                </select>
+              </div>
+
+              <!-- Clear Completed Button -->
+              <button id="clear-completed-btn" class="btn btn-outline-danger btn-sm" title="Remove completed tasks">
+                <i class="fa-regular fa-trash-can"></i>
+                <span class="d-none-mobile">Clear Done</span>
               </button>
             </div>
-            <span class="input-error" id="input-error"></span>
-          </form>
+          </div>
         </section>
 
-        <!-- Filters & Search Toolbar -->
-        <section class="toolbar-card" aria-label="Filter and Search Tasks">
-          <!-- Filter Tabs -->
-          <div class="filter-tabs" role="tablist">
-            <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
-              All <span class="badge" id="count-all">0</span>
-            </button>
-            <button class="filter-tab" data-filter="active" role="tab" aria-selected="false">
-              Active <span class="badge" id="count-active">0</span>
-            </button>
-            <button class="filter-tab" data-filter="completed" role="tab" aria-selected="false">
-              Completed <span class="badge" id="count-completed">0</span>
-            </button>
-          </div>
-
-          <!-- Search & Controls -->
-          <div class="toolbar-controls">
-            <div class="search-box">
-              <i class="fa-solid fa-magnifying-glass search-icon"></i>
-              <input 
-                type="text" 
-                id="search-input" 
-                class="search-input" 
-                placeholder="Search tasks..." 
-                aria-label="Search Tasks" 
-              />
-              <button id="clear-search-btn" class="clear-search-btn" aria-label="Clear Search" style="display: none;">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
+        <!-- ====================================================================
+             3. DYNAMIC CONTENT VIEWS
+             ==================================================================== -->
+        <div class="views-wrapper">
+          
+          <!-- ================================================================
+               VIEW 1: LIST VIEW
+               ================================================================ -->
+          <section class="content-view active" id="view-list" aria-label="Task List View">
+            <!-- Progress Completion Track -->
+            <div class="list-progress-card">
+              <div class="progress-info-row">
+                <span class="progress-title">Overall Task Completion</span>
+                <span class="progress-percent" id="stats-percentage">0%</span>
+              </div>
+              <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+              </div>
+              <div class="progress-sub-row">
+                <span id="stats-counter">0 of 0 completed</span>
+                <span id="stats-active-counter">0 pending</span>
+              </div>
             </div>
 
-            <button id="clear-completed-btn" class="btn btn-outline-danger btn-sm" title="Remove all completed tasks">
-              <i class="fa-regular fa-trash-can"></i> Clear Completed
-            </button>
-          </div>
-        </section>
+            <!-- Task List Element -->
+            <ul class="task-list" id="task-list" aria-live="polite">
+              <!-- Dynamically populated tasks -->
+            </ul>
 
-        <!-- Tasks List Container -->
-        <section class="tasks-section" aria-label="Task List">
-          <ul class="task-list" id="task-list">
-            <!-- Dynamic Task Items rendered here -->
-          </ul>
-
-          <!-- Empty State (Shown when no tasks match) -->
-          <div class="empty-state" id="empty-state" style="display: none;">
-            <div class="empty-icon">
-              <i class="fa-regular fa-clipboard"></i>
+            <!-- Empty State Container -->
+            <div class="empty-state" id="empty-state" style="display: none;">
+              <div class="empty-icon">
+                <i class="fa-regular fa-clipboard"></i>
+              </div>
+              <h3 class="empty-title" id="empty-title">You're all caught up!</h3>
+              <p class="empty-desc" id="empty-desc">No tasks match your current filter. Enjoy the empty space or add a new task.</p>
+              <button class="btn btn-primary btn-sm" id="btn-empty-add"><i class="fa-solid fa-plus"></i> Add a Task</button>
             </div>
-            <h3 class="empty-title">No tasks found</h3>
-            <p class="empty-desc">You're all caught up! Add a new task above or try adjusting your search/filter.</p>
-          </div>
-        </section>
+          </section>
+
+          <!-- ================================================================
+               VIEW 2: KANBAN BOARD VIEW
+               ================================================================ -->
+          <section class="content-view" id="view-kanban" aria-label="Kanban Board View">
+            <div class="kanban-board-container">
+              
+              <!-- Column 1: TO DO -->
+              <div class="kanban-column" data-status="todo" id="kanban-col-todo">
+                <div class="kanban-col-header">
+                  <div class="kanban-col-title-group">
+                    <span class="col-indicator indicator-todo"></span>
+                    <h3 class="kanban-col-title">To Do</h3>
+                    <span class="kanban-count-badge" id="kanban-count-todo">0</span>
+                  </div>
+                  <button class="btn-col-add" data-status="todo" title="Add to To Do">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <div class="kanban-dropzone" id="kanban-dropzone-todo">
+                  <!-- Kanban cards -->
+                </div>
+              </div>
+
+              <!-- Column 2: IN PROGRESS -->
+              <div class="kanban-column" data-status="in_progress" id="kanban-col-in-progress">
+                <div class="kanban-col-header">
+                  <div class="kanban-col-title-group">
+                    <span class="col-indicator indicator-progress"></span>
+                    <h3 class="kanban-col-title">In Progress</h3>
+                    <span class="kanban-count-badge" id="kanban-count-in-progress">0</span>
+                  </div>
+                  <button class="btn-col-add" data-status="in_progress" title="Add to In Progress">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+                <div class="kanban-dropzone" id="kanban-dropzone-in-progress">
+                  <!-- Kanban cards -->
+                </div>
+              </div>
+
+              <!-- Column 3: COMPLETED -->
+              <div class="kanban-column" data-status="completed" id="kanban-col-completed">
+                <div class="kanban-col-header">
+                  <div class="kanban-col-title-group">
+                    <span class="col-indicator indicator-completed"></span>
+                    <h3 class="kanban-col-title">Completed</h3>
+                    <span class="kanban-count-badge" id="kanban-count-completed">0</span>
+                  </div>
+                </div>
+                <div class="kanban-dropzone" id="kanban-dropzone-completed">
+                  <!-- Kanban cards -->
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- ================================================================
+               VIEW 3: CALENDAR VIEW
+               ================================================================ -->
+          <section class="content-view" id="view-calendar" aria-label="Calendar View">
+            <div class="calendar-card">
+              <!-- Calendar Navigation Header -->
+              <div class="calendar-header">
+                <div class="calendar-nav-controls">
+                  <button class="btn-cal-nav" id="btn-cal-prev" title="Previous Month">
+                    <i class="fa-solid fa-chevron-left"></i>
+                  </button>
+                  <h2 class="calendar-current-month" id="calendar-month-year">September 2026</h2>
+                  <button class="btn-cal-nav" id="btn-cal-next" title="Next Month">
+                    <i class="fa-solid fa-chevron-right"></i>
+                  </button>
+                </div>
+                <div class="calendar-header-actions">
+                  <button class="btn btn-outline btn-xs" id="btn-cal-today">Today</button>
+                  <span class="calendar-tasks-counter" id="calendar-total-tasks">0 tasks scheduled</span>
+                </div>
+              </div>
+
+              <!-- Calendar Weekday Names Header -->
+              <div class="calendar-weekdays-grid">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+              </div>
+
+              <!-- Calendar Days Grid (Populated dynamically) -->
+              <div class="calendar-days-grid" id="calendar-days-grid">
+                <!-- Day cells -->
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               VIEW 4: POMODORO FOCUS MODE
+               ================================================================ -->
+          <section class="content-view" id="view-pomodoro" aria-label="Pomodoro Focus Mode View">
+            <div class="pomodoro-container">
+              <div class="pomodoro-card">
+                
+                <!-- Timer Mode Selector -->
+                <div class="pomodoro-modes">
+                  <button class="pomo-mode-btn active" data-mode="focus">
+                    <i class="fa-solid fa-brain"></i> Focus (25m)
+                  </button>
+                  <button class="pomo-mode-btn" data-mode="shortBreak">
+                    <i class="fa-solid fa-mug-hot"></i> Short Break (5m)
+                  </button>
+                  <button class="pomo-mode-btn" data-mode="longBreak">
+                    <i class="fa-solid fa-battery-half"></i> Long Break (15m)
+                  </button>
+                </div>
+
+                <!-- Timer Display & Ring -->
+                <div class="pomo-timer-display-wrap">
+                  <svg class="pomo-progress-ring" viewBox="0 0 240 240">
+                    <circle class="pomo-ring-bg" cx="120" cy="120" r="105" />
+                    <circle class="pomo-ring-fill" id="pomo-ring-fill" cx="120" cy="120" r="105" />
+                  </svg>
+                  <div class="pomo-time-center">
+                    <span class="pomo-time-digits" id="pomo-time-display">25:00</span>
+                    <span class="pomo-time-state" id="pomo-state-label">Ready to Focus</span>
+                  </div>
+                </div>
+
+                <!-- Attached Focus Task Selector -->
+                <div class="pomo-task-selector-box">
+                  <label for="pomo-task-select" class="pomo-label">
+                    <i class="fa-solid fa-crosshairs"></i> Focusing on Task:
+                  </label>
+                  <select id="pomo-task-select" class="pomo-select">
+                    <option value="">-- Select a Task to Focus On --</option>
+                  </select>
+                </div>
+
+                <!-- Timer Controls -->
+                <div class="pomo-controls-row">
+                  <button class="btn-pomo btn-pomo-start" id="btn-pomo-toggle">
+                    <i class="fa-solid fa-play" id="pomo-toggle-icon"></i>
+                    <span id="pomo-toggle-text">Start Focus</span>
+                  </button>
+                  <button class="btn-pomo-secondary" id="btn-pomo-reset" title="Reset Timer">
+                    <i class="fa-solid fa-rotate-right"></i>
+                  </button>
+                  <button class="btn-pomo-secondary" id="btn-pomo-skip" title="Skip to next session">
+                    <i class="fa-solid fa-forward-step"></i>
+                  </button>
+                </div>
+
+                <!-- Pomodoro Stats Summary Footer -->
+                <div class="pomo-stats-footer">
+                  <div class="pomo-stat-item">
+                    <span class="pomo-stat-val" id="pomo-completed-sessions">0</span>
+                    <span class="pomo-stat-lbl">Sessions Done</span>
+                  </div>
+                  <div class="pomo-stat-divider"></div>
+                  <div class="pomo-stat-item">
+                    <span class="pomo-stat-val" id="pomo-total-focus-time">0m</span>
+                    <span class="pomo-stat-lbl">Focus Time</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               VIEW 5: PRODUCTIVITY ANALYTICS
+               ================================================================ -->
+          <section class="content-view" id="view-analytics" aria-label="Productivity Analytics View">
+            <div class="analytics-layout">
+              
+              <!-- Top Row: High-Level Analytics Metrics -->
+              <div class="analytics-metrics-grid">
+                <div class="analytics-metric-card">
+                  <span class="analytics-lbl">Total Tasks</span>
+                  <div class="analytics-val" id="an-total-tasks">0</div>
+                  <span class="analytics-desc" id="an-total-desc">All time tracked</span>
+                </div>
+                <div class="analytics-metric-card">
+                  <span class="analytics-lbl">Completion Rate</span>
+                  <div class="analytics-val text-emerald" id="an-rate">0%</div>
+                  <span class="analytics-desc" id="an-rate-desc">0 completed</span>
+                </div>
+                <div class="analytics-metric-card">
+                  <span class="analytics-lbl">This Week</span>
+                  <div class="analytics-val text-indigo" id="an-week-completed">0</div>
+                  <span class="analytics-desc">Tasks done in last 7 days</span>
+                </div>
+                <div class="analytics-metric-card">
+                  <span class="analytics-lbl">Focus Sessions</span>
+                  <div class="analytics-val text-amber" id="an-focus-sessions">0</div>
+                  <span class="analytics-desc" id="an-focus-time">0 min logged</span>
+                </div>
+              </div>
+
+              <!-- Main Row: Real Weekly Activity & Category Breakdown -->
+              <div class="analytics-charts-grid">
+                <!-- Weekly Activity Bar Chart -->
+                <div class="chart-card">
+                  <div class="chart-card-header">
+                    <div class="chart-title-group">
+                      <i class="fa-solid fa-chart-simple"></i>
+                      <h3 class="chart-title">Weekly Task Completions</h3>
+                    </div>
+                    <span class="chart-badge">Past 7 Days</span>
+                  </div>
+                  
+                  <div class="weekly-bar-chart" id="weekly-bar-chart">
+                    <!-- Dynamic Bars: Mon - Sun -->
+                  </div>
+                </div>
+
+                <!-- Category & Priority Distribution -->
+                <div class="chart-card">
+                  <div class="chart-card-header">
+                    <div class="chart-title-group">
+                      <i class="fa-solid fa-layer-group"></i>
+                      <h3 class="chart-title">Category Breakdown</h3>
+                    </div>
+                    <span class="chart-badge">Active &amp; Completed</span>
+                  </div>
+
+                  <div class="category-breakdown-list" id="category-breakdown-list">
+                    <!-- Category bars -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Streak Insights Card -->
+              <div class="streak-banner-card">
+                <div class="streak-banner-icon">
+                  <i class="fa-solid fa-fire"></i>
+                </div>
+                <div class="streak-banner-info">
+                  <h3 class="streak-banner-title">Consistency &amp; Daily Streaks</h3>
+                  <p class="streak-banner-desc" id="an-streak-desc">
+                    Complete at least one task each day to build your productivity momentum.
+                  </p>
+                </div>
+                <div class="streak-badges-row">
+                  <div class="streak-badge-pill">
+                    <span class="streak-pill-val" id="an-current-streak">0</span>
+                    <span class="streak-pill-lbl">Current Streak</span>
+                  </div>
+                  <div class="streak-badge-pill">
+                    <span class="streak-pill-val" id="an-longest-streak">0</span>
+                    <span class="streak-pill-lbl">Best Streak</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
       </div>
     </main>
 
-    <!-- App Footer -->
+    <!-- ======================================================================
+         4. APP FOOTER
+         ====================================================================== -->
     <footer class="app-footer">
       <div class="container footer-content">
         <p class="footer-text">
-          TaskFlow • Developed by <strong>Ajay Hukkeri</strong> for <strong>SAM AI Technologies</strong> Web Development Internship.
+          <strong>TaskFlow</strong> — Smart Task Manager • Developed by <strong>Ajay Hukkeri</strong> for <strong>SAM AI Technologies</strong>.
         </p>
         <div class="footer-links">
           <a href="../portfolio/index.html" class="footer-link"><i class="fa-solid fa-arrow-left"></i> Back to Portfolio</a>
           <span class="dot-separator">•</span>
-          <span class="storage-status"><i class="fa-solid fa-cloud-arrow-down"></i> LocalStorage Connected</span>
+          <span class="storage-status"><i class="fa-solid fa-database"></i> LocalStorage Persistent</span>
         </div>
       </div>
     </footer>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- ========================================================================
+       5. MODALS & DRAWERS
+       ======================================================================== -->
+
+  <!-- Modal 1: Create / Edit Task Modal -->
+  <div class="modal-backdrop" id="task-modal" aria-hidden="true">
+    <div class="modal-card modal-card-lg" role="dialog" aria-labelledby="task-modal-title">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge" id="task-modal-icon-badge">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <h2 class="modal-title" id="task-modal-title">Create New Task</h2>
+        </div>
+        <button class="btn-close-modal" id="btn-close-task-modal" aria-label="Close Modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="task-modal-form" class="modal-form" novalidate>
+        <div class="modal-body">
+          
+          <!-- Task Title -->
+          <div class="form-group">
+            <label for="modal-task-title" class="form-label">Task Title <span class="text-rose">*</span></label>
+            <input 
+              type="text" 
+              id="modal-task-title" 
+              class="form-control" 
+              placeholder="e.g. Build Portfolio Projects Showcase" 
+              required 
+            />
+            <span class="input-error" id="modal-title-error"></span>
+          </div>
+
+          <!-- Description / Notes -->
+          <div class="form-group">
+            <label for="modal-task-desc" class="form-label">Description &amp; Notes</label>
+            <textarea 
+              id="modal-task-desc" 
+              class="form-control form-textarea" 
+              rows="3" 
+              placeholder="Add key notes, context, or links related to this task..."
+            ></textarea>
+          </div>
+
+          <!-- Grid: Priority, Category, Status -->
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="modal-task-priority" class="form-label">Priority</label>
+              <select id="modal-task-priority" class="form-control select-priority">
+                <option value="critical">🔴 Critical</option>
+                <option value="high">🟠 High</option>
+                <option value="medium" selected>🟡 Medium</option>
+                <option value="low">🟢 Low</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-task-category" class="form-label">Category / Project</label>
+              <select id="modal-task-category" class="form-control">
+                <option value="Coding" selected>Coding</option>
+                <option value="Study">Study</option>
+                <option value="Work">Work</option>
+                <option value="Projects">Projects</option>
+                <option value="Personal">Personal</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-task-status" class="form-label">Status</label>
+              <select id="modal-task-status" class="form-control">
+                <option value="todo" selected>To Do</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Grid: Due Date, Due Time, Recurrence -->
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="modal-task-due-date" class="form-label">Due Date</label>
+              <input type="date" id="modal-task-due-date" class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label for="modal-task-due-time" class="form-label">Due Time</label>
+              <input type="time" id="modal-task-due-time" class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label for="modal-task-recurrence" class="form-label">Recurrence</label>
+              <select id="modal-task-recurrence" class="form-control">
+                <option value="none" selected>No Repeat</option>
+                <option value="daily">Daily</option>
+                <option value="weekdays">Weekdays (Mon-Fri)</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tags Input -->
+          <div class="form-group">
+            <label for="modal-task-tags" class="form-label">Tags (comma-separated or with #)</label>
+            <input 
+              type="text" 
+              id="modal-task-tags" 
+              class="form-control" 
+              placeholder="e.g. #dsa, #frontend, #urgent" 
+            />
+          </div>
+
+          <!-- Subtasks Section -->
+          <div class="form-group subtasks-group">
+            <div class="subtasks-header">
+              <label class="form-label mb-0">
+                <i class="fa-solid fa-list-check"></i> Subtasks (<span id="modal-subtask-progress">0/0</span>)
+              </label>
+            </div>
+
+            <div class="subtask-add-row">
+              <input 
+                type="text" 
+                id="modal-subtask-input" 
+                class="form-control" 
+                placeholder="Add subtask item (Press Enter)" 
+              />
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-subtask">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+            </div>
+
+            <ul class="modal-subtasks-list" id="modal-subtasks-list">
+              <!-- Subtask items -->
+            </ul>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <div class="modal-footer-left">
+            <button type="button" class="btn btn-outline-danger btn-sm" id="btn-modal-delete" style="display: none;">
+              <i class="fa-regular fa-trash-can"></i> Delete
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-modal-duplicate" style="display: none;">
+              <i class="fa-regular fa-clone"></i> Duplicate
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-modal-focus" style="display: none;">
+              <i class="fa-solid fa-stopwatch"></i> Focus
+            </button>
+          </div>
+          <div class="modal-footer-right">
+            <button type="button" class="btn btn-secondary" id="btn-cancel-task-modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-task-modal">
+              <i class="fa-solid fa-check"></i> Save Task
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Import / Export Backup Modal -->
+  <div class="modal-backdrop" id="backup-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-labelledby="backup-modal-title">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">
+            <i class="fa-solid fa-database"></i>
+          </div>
+          <h2 class="modal-title" id="backup-modal-title">Backup &amp; Restore Tasks</h2>
+        </div>
+        <button class="btn-close-modal" id="btn-close-backup-modal" aria-label="Close Modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Export Section -->
+        <div class="backup-section">
+          <h4 class="backup-section-title"><i class="fa-solid fa-file-export"></i> Export Tasks</h4>
+          <p class="backup-section-desc">Download a JSON backup containing all tasks, tags, categories, and settings.</p>
+          <button class="btn btn-primary btn-sm" id="btn-export-json">
+            <i class="fa-solid fa-download"></i> Download Backup (.json)
+          </button>
+        </div>
+
+        <div class="backup-divider"></div>
+
+        <!-- Import Section -->
+        <div class="backup-section">
+          <h4 class="backup-section-title"><i class="fa-solid fa-file-import"></i> Restore from Backup</h4>
+          <p class="backup-section-desc">Upload a previously exported TaskFlow JSON file to restore your tasks.</p>
+          <input type="file" id="import-file-input" accept=".json,application/json" style="display: none;" />
+          <div class="import-actions-row">
+            <button class="btn btn-secondary btn-sm" id="btn-trigger-file-import">
+              <i class="fa-solid fa-upload"></i> Choose JSON File
+            </button>
+            <span class="import-filename" id="import-filename-preview">No file selected</span>
+          </div>
+          <div class="import-options-row mt-2" id="import-confirm-box" style="display: none;">
+            <button class="btn btn-primary btn-sm" id="btn-execute-import">
+              <i class="fa-solid fa-arrow-rotate-right"></i> Confirm &amp; Restore
+            </button>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-close-backup-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Keyboard Shortcuts Modal -->
+  <div class="modal-backdrop" id="shortcuts-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-labelledby="shortcuts-modal-title">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <div class="modal-icon-badge">
+            <i class="fa-solid fa-keyboard"></i>
+          </div>
+          <h2 class="modal-title" id="shortcuts-modal-title">Keyboard Shortcuts</h2>
+        </div>
+        <button class="btn-close-modal" id="btn-close-shortcuts-modal" aria-label="Close Modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcuts-grid">
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Create New Task</span>
+            <kbd class="shortcut-key">N</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Focus Search Bar</span>
+            <kbd class="shortcut-key">/</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">List View</span>
+            <kbd class="shortcut-key">1</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Kanban Board View</span>
+            <kbd class="shortcut-key">2</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Calendar View</span>
+            <kbd class="shortcut-key">3</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Focus Pomodoro View</span>
+            <kbd class="shortcut-key">4</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Analytics View</span>
+            <kbd class="shortcut-key">5</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Close Open Modal / Dialog</span>
+            <kbd class="shortcut-key">Esc</kbd>
+          </div>
+          <div class="shortcut-row">
+            <span class="shortcut-desc">Open Keyboard Shortcuts</span>
+            <kbd class="shortcut-key">?</kbd>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-close-shortcuts-footer">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Feedback Container -->
   <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
 
-  <!-- JavaScript -->
-  <script src="js/app.js"></script>
+  <!-- JavaScript Modules (Versioned for cache-busting) -->
+  <script src="js/app.js?v=2.0.0"></script>
 </body>
 </html>
